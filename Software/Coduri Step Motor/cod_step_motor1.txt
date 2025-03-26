@@ -1,0 +1,39 @@
+from machine import Pin
+from time import sleep
+
+# Definim pinii pentru controlul motorului
+pins = [Pin(10, Pin.OUT), Pin(11, Pin.OUT), Pin(12, Pin.OUT), Pin(13, Pin.OUT)]
+
+# Secvența de pași pentru motorul 28BYJ-48
+sequence = [
+    [1, 0, 0, 0],
+    [1, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 1, 0],
+    [0, 0, 1, 1],
+    [0, 0, 0, 1],
+    [1, 0, 0, 1]
+]
+
+def step_motor(steps, delay=0.002):
+    if steps > 0:
+        step_range = range(steps)
+    else:
+        step_range = range(abs(steps))
+        sequence.reverse()
+    
+    for _ in step_range:
+        for step in sequence:
+            for pin, val in zip(pins, step):
+                pin.value(val)
+            sleep(delay)
+    
+    sequence.reverse()  # Restaurăm ordinea originală
+
+# Exemplu de utilizare
+while True:
+    step_motor(512)  # Rotește înainte o rotație completă (512 pași)
+    sleep(1)
+    step_motor(-512) # Rotește înapoi
+    sleep(1)

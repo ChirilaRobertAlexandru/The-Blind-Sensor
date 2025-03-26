@@ -1,0 +1,41 @@
+from machine import Pin
+import utime
+
+pins = [Pin(10, Pin.OUT), Pin(11, Pin.OUT), Pin(12, Pin.OUT), Pin(13, Pin.OUT)]
+
+half_steps_sequence = [
+    [1, 0, 0, 0],
+    [1, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 1, 0],
+    [0, 0, 1, 1],
+    [0, 0, 0, 1],
+    [1, 0, 0, 1],
+]
+
+def rotate(steps, direction=1):
+    for _ in range(steps):
+        for step in half_steps_sequence[::direction]:
+            for pin, val in zip(pins, step):
+                pin.value(val)
+            utime.sleep_ms(3)
+
+def test_rotations():
+    test_steps = [512, 1024, 2048, 4096]
+    marker_position = 0  # Presupunem că marcam poziția inițială
+    
+    for steps in test_steps:
+        print(f"Testăm {steps} pași...")
+        input("Apasă Enter după ce ai marcat poziția motorului...")
+        
+        rotate(steps, 1)  # Rotire în sens orar
+        
+        input("Motorul s-a oprit. Câte rotații complete a făcut? (notează și apasă Enter)...")
+        
+        # Revenim la poziția inițială
+        rotate(steps, -1)  # Rotire în sens invers
+        utime.sleep(1)
+
+# Rulăm testul
+test_rotations()

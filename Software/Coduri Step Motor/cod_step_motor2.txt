@@ -1,0 +1,36 @@
+from machine import Pin
+import utime
+
+pins = [ Pin(10,Pin.OUT) , Pin(11,Pin.OUT) , Pin(12,Pin.OUT) , Pin(13,Pin.OUT) ]
+
+half_steps_sequence = [
+    [1,0,0,0],
+    [1,1,0,0],
+    [0,1,0,0],
+    [0,1,1,0],
+    [0,0,1,0],
+    [0,0,1,1],
+    [0,0,0,1],
+    [1,0,0,1],
+]
+
+steps = 512
+while True :
+    for i in range(steps):
+        for step in half_steps_sequence:
+            for j in range(len(pins)):
+                pins[j].value(step[j])
+                utime.sleep_us(600)
+                
+    utime.sleep(1)
+    
+    for i in range(steps):
+        for step in reversed(half_steps_sequence):
+            for j in range(len(pins)):
+                pins[j].value(step[j])
+                utime.sleep_us(600)
+                
+    utime.sleep(1)
+    
+                
+                

@@ -1,0 +1,46 @@
+import sys
+from machine import Pin
+import utime
+
+pins = [ Pin(10,Pin.OUT) , Pin(11,Pin.OUT) , Pin(12,Pin.OUT) , Pin(13,Pin.OUT) ]
+
+half_steps_sequence = [
+    [1,0,0,0],
+    [1,1,0,0],
+    [0,1,0,0],
+    [0,1,1,0],
+    [0,0,1,0],
+    [0,0,1,1],
+    [0,0,0,1],
+    [1,0,0,1],
+]
+
+steps = 512
+pasi_1 = 0
+pasi_2 = 0
+
+while True :
+    for i in range(steps ):
+        for step in half_steps_sequence:
+            pasi_1 +=1
+            #if pasi_1 == 2046 :
+            print (f"Pasul: : {pasi_1}")
+                #sys.exit()       
+            for j in range(len(pins)):
+                pins[j].value(step[j])
+                utime.sleep_us(500)                
+    utime.sleep(1)
+    print (pasi_1)
+    pasi_1 = 0
+    
+    for i in range(steps ):
+        for step in reversed(half_steps_sequence):
+            pasi_2 +=1
+            for j in range(len(pins)):
+                pins[j].value(step[j])
+                utime.sleep_us(500)
+    utime.sleep(1)
+    print (pasi_2)
+    pasi_2 = 0           
+                
+
